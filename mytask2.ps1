@@ -1,6 +1,6 @@
 param($TaskName, $WaitSeconds)
 
-#Create New task or enable it if already exist
+#Create New task
 function  Create-Task{
     param (
         [string]$taskName
@@ -18,20 +18,20 @@ function  Create-Task{
     }
 }
 
-#Enable-Disable task function
+#Enable-Disable task
 function  Change-TaskStatus{
     param (
         [string]$taskName
     )
     $task = Get-ScheduledTask | Where-Object { $_.TaskName -eq $taskName }
     if ($null -ne $task) {
-        if ($task.State -eq 'ready')
+        if ($task.State -eq 'disabled')
         {
-        $task | Disable-ScheduledTask
+        $task | Enable-ScheduledTask
         }
         else
         {
-        $task | Enable-ScheduledTask 
+        $task | Disable-ScheduledTask
         }
     }
 }
@@ -40,9 +40,10 @@ function  Change-TaskStatus{
 function Get-AllTasks {
     Get-ScheduledTask | Where-Object { ($_.TaskPath -eq "\mytasks\") -and ($_.State -eq "ready") } | ForEach-Object {Write-Host (-join($_.TaskPath,$_.TaskName)) }
 }
-
 #Main
 Create-Task -taskName $TaskName
+Get-AllTasks
+Write-Host "$taskName will disabled in $WaitSeconds seconds"
 Start-Sleep -s $WaitSeconds
 Change-TaskStatus -taskName $TaskName
 Get-AllTasks
