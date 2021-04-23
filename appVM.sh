@@ -4,5 +4,5 @@ apt-get install -y npm
 apt-get install  -y default-jdk
 cd /home/idanml/
 mkdir jenkins
-cd jenkins/
+chmod -R 777 /home/idanml/jenkins/
 
